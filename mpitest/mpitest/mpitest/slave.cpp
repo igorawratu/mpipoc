@@ -23,12 +23,10 @@ void Slave::run(){
         if(workload < 0)
             break;
         
-        for(int k = 0; k < workload; ++k){
-            Sleep(1);
-        }
+        Sleep(workload);
 
         cout << "Slave " << rank << " complete" << endl;
 
-        MPI_Send(&rank, 1, MPI_INT, 0, 1, MPI_COMM_WORLD);
+        MPI_Send(&workload, 1, MPI_INT, 0, 1, MPI_COMM_WORLD);
     }
 }

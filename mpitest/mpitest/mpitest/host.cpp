@@ -28,6 +28,7 @@ void Host::run(){
     }
 
     //launch host worker thread
+    boost::thread t(boost::bind(&Host::hostwork, this) );
 
     cout << "processing..." << endl;
 
@@ -69,7 +70,7 @@ void Host::run(){
             }
             else{
                 mWorkStatus = COMPLETE;
-                //join host thread here
+                t.join();
             }
         }
 
@@ -88,5 +89,18 @@ void Host::run(){
 }
 
 void Host::hostwork(){
+    //cout << "host thread started" << endl;
+    while(mWorkStatus != COMPLETE){
+        if(mWorkStatus = WORK){
+            int workload = rand() % 1000 + 200;
+            
+            Sleep(workload);
 
+            cout << "Host thread complete" << endl;
+
+            mWorkStatus = NOWORK;
+        }
+
+        Sleep(50);
+    }
 }
