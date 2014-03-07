@@ -3,10 +3,12 @@
 
 #include <mpi.h>
 #include <boost/thread.hpp>
-
+#include <windows.h>
 #include <iostream>
 
 using namespace std;
+
+enum WorkStatus{NOWORK, WORK, COMPLETE};
 
 class Host
 {
@@ -18,6 +20,9 @@ public:
 
 private:
     void hostwork();
+
+private:
+    WorkStatus mWorkStatus;
 };
 
 #endif

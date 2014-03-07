@@ -1,7 +1,7 @@
 #include "host.h"
 
 Host::Host(){
-
+    mWorkStatus = NOWORK;
 }
 
 Host::~Host(){
@@ -11,6 +11,10 @@ Host::~Host(){
 void Host::run(){
     int totalSlaveProcs, totalWork, completed;
     MPI_Comm_size(MPI_COMM_WORLD, &totalSlaveProcs);
+    assert(totalSlaveProcs > 0);
+    
+    MPI_Request* requests = new MPI_Request[totalSlaveProcs - 1];
+    int* dat = new int[totalSlaveProcs - 1];
 
     totalWork = completed = 100;
 
@@ -18,12 +22,18 @@ void Host::run(){
     for(int k = 1; k < totalSlaveProcs; ++k){
         int workload = rand() % 1000 + 200;
         MPI_Send(&workload, 1, MPI_INT, k, 1, MPI_COMM_WORLD);
+        MPI_Irecv(&dat[k - 1], 1, MPI_INT, k, 1, MPI_COMM_WORLD, &requests[k - 1]);
     }
 
     cout << "processing..." << endl;
 
     //issue work after slave requests
     totalWork = totalWork - totalSlaveProcs + 1;
+
+    while(totalWork){
+        for(uint k = 0; k < 
+    }
+
     for(int k = 0; k < totalWork; ++k){
         int slaveRank;
         MPI_Status status;
@@ -54,6 +64,9 @@ void Host::run(){
         int msg = -1;
         MPI_Send(&msg, 1, MPI_INT, k, 1, MPI_COMM_WORLD);
     }
+
+    delete [] requests;
+    delete [] dat;
 }
 
 void Host::hostwork(){
